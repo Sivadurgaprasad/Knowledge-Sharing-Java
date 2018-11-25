@@ -1,12 +1,12 @@
 package com.jw.model;
 
-import org.springframework.data.annotation.Id;
+import java.io.Serializable;
 
 import lombok.Data;
 
 @Data
-public class Need {
-	@Id
-	private String id;
+public class NeedDTO implements Serializable {
+
+	private static final long serialVersionUID = 8298040296587092139L;
 	private String need;
 }

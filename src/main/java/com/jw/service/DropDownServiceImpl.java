@@ -12,6 +12,8 @@ import com.jw.dto.BlogDropDownDTO;
 import com.jw.exception.DataAccessNotFoundException;
 import com.jw.model.TechInfo;
 import com.jw.repository.DropDownRepository;
+import com.jw.util.ErrorCode;
+import com.jw.util.KSConstants;
 
 @Service
 public class DropDownServiceImpl implements DropDownService {
@@ -29,17 +31,17 @@ public class DropDownServiceImpl implements DropDownService {
 
 		LOGGER.debug("Blog technologies fetching");
 		techInfoList = dropDownRepository.findAllDropDownTechnologies();
-		if (techInfoList != null && !techInfoList.isEmpty() && techInfoList.size() > 0) {
-			blogDDList = new ArrayList<BlogDropDownDTO>();
+		if (techInfoList != null && !techInfoList.isEmpty()) {
+			blogDDList = new ArrayList<>();
 			for (TechInfo techInfo : techInfoList) {
 				blogDD = new BlogDropDownDTO();
-				blogDD.setId(techInfo.getId());
+			//	blogDD.setId(techInfo.getId());
 				blogDD.setBlog(techInfo.getBlog());
 				blogDDList.add(blogDD);
 			}
 		} else {
 			LOGGER.error("Fetching Blog technologies failed");
-			throw new DataAccessNotFoundException("ks1001", "Blog Technologies not found, Please try again");
+			throw new DataAccessNotFoundException(ErrorCode.KS1001.toString(), KSConstants.KS1001);
 		}
 		return blogDDList;
 	}
@@ -53,11 +55,11 @@ public class DropDownServiceImpl implements DropDownService {
 		techInfo = dropDownRepository.findAllDropDownSubTechs(technologyId);
 		if (techInfo != null) {
 			blogDD = new BlogDropDownDTO();
-			blogDD.setId(techInfo.getId());
+		//	blogDD.setId(techInfo.getId());
 			blogDD.setSubTechs(techInfo.getSubTechs());
 		} else {
 			LOGGER.error("Fetching Blog Sub Technologies failed");
-			throw new DataAccessNotFoundException("ks1001", "Blog Sub Technologies not found, Please try again");
+			throw new DataAccessNotFoundException(ErrorCode.KS1001.toString(), KSConstants.KS1001);
 		}
 		return blogDD;
 	}

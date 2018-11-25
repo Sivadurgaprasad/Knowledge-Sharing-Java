@@ -1,14 +1,15 @@
 package com.jw.model;
 
-import org.springframework.data.annotation.Id;
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 
 @Data
-public class Archetecture {
-	@Id
-	private String id;
+public class ArchetectureDTO implements Serializable {
+
+	private static final long serialVersionUID = -2888121561646554681L;
 	private String archetecture;
 	@Transient
 	private String diagram;

@@ -1,16 +1,10 @@
 package com.jw.model;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Setter
-@Getter
-@ToString
+@Data
 public class BlogDetails {
 
 	@Id

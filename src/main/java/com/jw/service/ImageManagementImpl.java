@@ -24,9 +24,11 @@ import com.jw.exception.FileIOException;
 import com.jw.exception.InvalidInputDataException;
 import com.jw.exception.NullDirectoryException;
 import com.jw.model.Blog;
-import com.jw.model.SubTech;
+import com.jw.model.SubTechDTO;
 import com.jw.model.TechInfo;
+import com.jw.util.ErrorCode;
 import com.jw.util.FilePathUtil;
+import com.jw.util.KSConstants;
 
 @Service
 public class ImageManagementImpl implements ImageManagement {
@@ -36,6 +38,9 @@ public class ImageManagementImpl implements ImageManagement {
 	@Autowired
 	private FilePathUtil filePathUtil;
 
+	@Autowired
+	private ImageManagement imageManagement;
+
 	@Override
 	public String upload(MultipartFile multipartFile, String uploadLocation) {
 		Path filePath = null;
@@ -44,16 +49,16 @@ public class ImageManagementImpl implements ImageManagement {
 			filePath = Files.createDirectory(Paths.get(uploadLocation, UUID.randomUUID().toString()));
 		} catch (IOException ex) {
 			LOGGER.error("Creating Directory failed, please check the file name or directory");
-			throw new NullDirectoryException("ks1100", "Directory Creation failed, Please check the paht of the file "
-					+ multipartFile.getOriginalFilename());
+			throw new NullDirectoryException(ErrorCode.KS1100.toString(),
+					KSConstants.KS1100.concat(multipartFile.getOriginalFilename()));
 		}
 		if (!multipartFile.isEmpty() && Files.isWritable(filePath)) {
 			try {
 				Files.write(filePath, multipartFile.getBytes());
 			} catch (IOException e) {
-				LOGGER.error("Failed to writing file in path :" + filePath.toString() + " and size is "
-						+ multipartFile.getSize() + " " + e.getMessage());
-				throw new FileIOException("ks1101", "File writing failed, please try again");
+				LOGGER.error("Failed to writing file in path : {} and size is {} {}", filePath, multipartFile.getSize(),
+						e.getMessage());
+				throw new FileIOException(ErrorCode.KS1101.toString(), KSConstants.KS1101);
 			}
 		}
 		return filePath.toString();
@@ -67,8 +72,8 @@ public class ImageManagementImpl implements ImageManagement {
 				fileBytes = Files.readAllBytes(Paths.get(uploadLocation));
 			}
 		} catch (IOException e) {
-			LOGGER.error("Reading file failed of path " + uploadLocation + " and exception " + e.getMessage());
-			throw new NullDirectoryException("ks1102", "File reading failed or file path null");
+			LOGGER.error("Reading file failed of path {} and exception {}", uploadLocation, e.getMessage());
+			throw new NullDirectoryException(ErrorCode.KS1102.toString(), KSConstants.KS1102);
 		}
 		return fileBytes;
 	}
@@ -78,8 +83,8 @@ public class ImageManagementImpl implements ImageManagement {
 		try {
 			return Files.deleteIfExists(Paths.get(file));
 		} catch (IOException e) {
-			LOGGER.error("Failed file deleting of " + file);
-			throw new NullDirectoryException("ks1103", "Image deleting failed or file path null");
+			LOGGER.error("Failed file deleting of {}", file);
+			throw new NullDirectoryException(ErrorCode.KS1103.toString(), KSConstants.KS1103);
 		}
 	}
 
@@ -105,12 +110,15 @@ public class ImageManagementImpl implements ImageManagement {
 						new File(fileDir.toString() + File.separator + originalFileName));
 				// If Image not save it throw exception.
 				if (!isSave)
-					throw new FileIOException("ks1101", "Image writing failed or file path null");
+					throw new FileIOException(ErrorCode.KS1101.toString(), KSConstants.KS1101);
 				path = Paths.get(fileDir.toString(), originalFileName);
+			} else {
+				LOGGER.error("Invalid file directory is {}", fileDir);
+				throw new NullDirectoryException(ErrorCode.KS1101.toString(), KSConstants.KS1101);
 			}
 
 		} catch (IOException e) {
-			LOGGER.error("Image writing failed of " + fileDir + File.separator + originalFileName);
+			LOGGER.error("Image writing failed of {}", fileDir + File.separator + originalFileName);
 			throw new FileIOException("ks1101", "Image writing failed or file path null");
 		}
 
@@ -121,7 +129,7 @@ public class ImageManagementImpl implements ImageManagement {
 	public List<String> writeMultipleImages(Map<String, String> imgPathOriginalName, String imgWritePath) {
 		List<String> uploadedPaths = null;
 
-		uploadedPaths = new ArrayList<String>();
+		uploadedPaths = new ArrayList<>();
 		for (Map.Entry<String, String> pathName : imgPathOriginalName.entrySet()) {
 			uploadedPaths.add(writeImage(null, pathName.getValue(), pathName.getKey(), imgWritePath));
 		}
@@ -134,13 +142,13 @@ public class ImageManagementImpl implements ImageManagement {
 		BufferedImage bufferedImage = null;
 
 		try {
-			file = new File(uploadLocation);
-			if (file != null) {
+			if (uploadLocation != null) {
+				file = new File(uploadLocation);
 				bufferedImage = ImageIO.read(file);
 				bufferedImage.flush();
 			}
 		} catch (IOException e) {
-			LOGGER.error("Image reading failed or input null" + e.getMessage());
+			LOGGER.error("Image reading failed or input null {}", e.getMessage());
 			throw new FileIOException("ks1102", "Image reading failed or file path null");
 		}
 
@@ -161,7 +169,7 @@ public class ImageManagementImpl implements ImageManagement {
 	@Override
 	public boolean deleteImage(String imageName) {
 		try {
-			LOGGER.debug("Deleting uploaded File in " + imageName);
+			LOGGER.debug("Deleting uploaded File in {}", imageName);
 			return Files.deleteIfExists(Paths.get(imageName));
 		} catch (IOException e) {
 			LOGGER.error("Image deleting failed");
@@ -175,57 +183,63 @@ public class ImageManagementImpl implements ImageManagement {
 		Map<String, String> scenarioPathOriginalName = null;
 		Map<String, String> programPathOriginalName = null;
 		Map<String, String> outputPathOriginalName = null;
-		SubTech subTech = null;
+		SubTechDTO subTech = null;
 
-		if (blog.getSubTechs() != null && !blog.getSubTechs().isEmpty() && blog.getSubTechs().size() > 0)
+		if (blog.getSubTechs() != null && !blog.getSubTechs().isEmpty())
 			subTech = blog.getSubTechs().get(0);
 		else {
 			throw new InvalidInputDataException("ks1002", "Invalid Input data.{}" + blog);
 		}
 
 		if (subTech.getArcheUploadImagePaths() != null && !subTech.getArcheUploadImagePaths().isEmpty()) {
-			LOGGER.debug("Archetecture images uploading and uploaded images deleting those are "
-					+ subTech.getArcheUploadImagePaths() + " and " + subTech.getArcheDeleteImagePaths());
-			archePathOriginalName = new HashMap<>();
-			for (String uploadPath : subTech.getArcheUploadImagePaths()) {
-				archePathOriginalName.put(uploadPath, filePathUtil.getOriginalImageName(uploadPath));
-			}
+			LOGGER.debug("Archetecture images uploading and uploaded images deleting those are {} and {}",
+					subTech.getArcheUploadImagePaths(), subTech.getArcheDeleteImagePaths());
+			// Adding all Archetecture upload image paths to a Map
+			archePathOriginalName = iterateImagePaths(subTech.getArcheUploadImagePaths());
 			subTech.setArcheImages(writeMultipleImages(archePathOriginalName, filePathUtil.imgBlogDir()));
-			subTech.getArcheDeleteImagePaths().forEach(path -> deleteImage(path));
+			subTech.getArcheDeleteImagePaths().forEach(path -> imageManagement.deleteImage(path));
 		}
 
 		if (subTech.getScenarioUploadImagePaths() != null && !subTech.getScenarioUploadImagePaths().isEmpty()) {
-			LOGGER.debug("Scenario images uploading and uploaded images deleting those are "
-					+ subTech.getScenarioUploadImagePaths() + " and " + subTech.getScenarioDeleteImagePaths());
-			scenarioPathOriginalName = new HashMap<>();
-			for (String path : subTech.getScenarioUploadImagePaths()) {
-				scenarioPathOriginalName.put(path, filePathUtil.getOriginalImageName(path));
-			}
+			LOGGER.debug("Scenario images uploading and uploaded images deleting those are {}  and {}",
+					subTech.getScenarioUploadImagePaths(), subTech.getScenarioDeleteImagePaths());
+			// Adding all Scenario upload image paths to a Map
+			scenarioPathOriginalName = iterateImagePaths(subTech.getScenarioUploadImagePaths());
 			subTech.setScenarioImages(writeMultipleImages(scenarioPathOriginalName, filePathUtil.imgBlogDir()));
-			subTech.getScenarioDeleteImagePaths().forEach(path -> deleteImage(path));
+			subTech.getScenarioDeleteImagePaths().forEach(path -> imageManagement.deleteImage(path));
 		}
 
 		if (subTech.getProgramUploadImagePaths() != null && subTech.getProgramUploadImagePaths().isEmpty()) {
 			LOGGER.debug("Program images uploading and uploaded images deleting those are "
 					+ subTech.getProgramUploadImagePaths() + " and " + subTech.getProgramDeleteImagePaths());
-			programPathOriginalName = new HashMap<>();
-			for (String path : subTech.getProgramUploadImagePaths()) {
-				programPathOriginalName.put(path, filePathUtil.getOriginalImageName(path));
-			}
+			// Adding all Program upload image paths to a Map
+			programPathOriginalName = iterateImagePaths(subTech.getProgramUploadImagePaths());
 			subTech.setProgramImages(writeMultipleImages(programPathOriginalName, filePathUtil.imgBlogDir()));
-			subTech.getProgramDeleteImagePaths().forEach(path -> deleteImage(path));
+			subTech.getProgramDeleteImagePaths().forEach(path -> imageManagement.deleteImage(path));
 		}
 
 		if (subTech.getOutputUploadImagePaths() != null && !subTech.getOutputUploadImagePaths().isEmpty()) {
 			LOGGER.debug("Output images uploading and uploaded images deleting those are "
 					+ subTech.getOutputUploadImagePaths() + " and " + subTech.getOutputDeleteImagePaths());
-			outputPathOriginalName = new HashMap<>();
-			for (String path : subTech.getOutputUploadImagePaths()) {
-				outputPathOriginalName.put(path, filePathUtil.getOriginalImageName(path));
-			}
+			// Adding all Output upload image paths to a Map
+			outputPathOriginalName = iterateImagePaths(subTech.getOutputUploadImagePaths());
 			subTech.setOutputImages(writeMultipleImages(outputPathOriginalName, filePathUtil.imgBlogDir()));
-			subTech.getOutputDeleteImagePaths().forEach(path -> deleteImage(path));
+			subTech.getOutputDeleteImagePaths().forEach(path -> imageManagement.deleteImage(path));
 		}
+	}
+
+	/*
+	 * for modularizing the uploadBlogImageAndDeleteFromTemp() method and code
+	 * reusabulity.
+	 */
+	private Map<String, String> iterateImagePaths(List<String> imagePaths) {
+		Map<String, String> imagePathOriginalName = null;
+
+		imagePathOriginalName = new HashMap<>();
+		for (String path : imagePaths) {
+			imagePathOriginalName.put(path, filePathUtil.getOriginalImageName(path));
+		}
+		return imagePathOriginalName;
 	}
 
 	@Override
@@ -235,11 +249,10 @@ public class ImageManagementImpl implements ImageManagement {
 		if (techInfo.getUploadImagePath() != null) {
 			techInfo.setBlogIconName(writeImage(null, filePathUtil.getOriginalImageName(techInfo.getUploadImagePath()),
 					techInfo.getUploadImagePath(), filePathUtil.imgTechInfoDir()));
-			techInfo.getDeleteImageUrlList().forEach(path -> {
-				deleteImage(path);
-			});
-		} else
+			techInfo.getDeleteImageUrlList().forEach(path -> imageManagement.deleteImage(path));
+		} else {
 			throw new InvalidInputDataException("ks1002", "Blog icon id is null, please upload Blog icon first");
+		}
 	}
 
 }

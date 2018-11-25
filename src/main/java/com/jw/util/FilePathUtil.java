@@ -23,18 +23,15 @@ public class FilePathUtil {
 	}
 
 	public String imgtempDir() {
-		String tempDir = rootPath + "temp" + separator + UUID.randomUUID().toString() + separator;
-		return tempDir;
+		return rootPath + "temp" + separator + UUID.randomUUID().toString() + separator;
 	}
 
 	public String imgBlogDir() {
-		String imgDir = dataFormatConverter.getGeniricWritePath() + "blog" + separator;
-		return imgDir;
+		return dataFormatConverter.getGeniricWritePath() + "blog" + separator;
 	}
 
 	public String imgTechInfoDir() {
-		String imgDir = dataFormatConverter.getGeniricWritePath() + "technology" + separator;
-		return imgDir;
+		return dataFormatConverter.getGeniricWritePath() + "technology" + separator;
 	}
 
 	public String getOriginalImageName(String path) {
@@ -47,8 +44,7 @@ public class FilePathUtil {
 		String[] tokens = null;
 
 		tokens = path.split(Pattern.quote(File.separator));
-		String p = tokens[tokens.length - 2];
-		return p;
+		return tokens[tokens.length - 2];
 	}
 
 }

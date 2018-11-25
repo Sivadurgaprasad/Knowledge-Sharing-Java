@@ -5,22 +5,17 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Document(collection = "TechInfo")
 @Setter
 @Getter
 @ToString
-public class TechInfo extends BaseModel {
+public class TechInfo  {
 
-	private static final long serialVersionUID = 4525465395605762084L;
-	@Id
 	private String id;
 	@NotNull
 	@NotEmpty
@@ -32,6 +27,31 @@ public class TechInfo extends BaseModel {
 	private String uploadImagePath;
 	@Transient
 	private List<String> deleteImageUrlList;
-	private List<SubTech> subTechs;
+	private List<String> subTechs;
 	private String blogIconName;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		TechInfo techInfo = (TechInfo) obj;
+		if (this.hashCode() == techInfo.hashCode()) {
+			return true;
+		}
+		return Boolean.FALSE;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((blog == null) ? 0 : blog.hashCode());
+		result = prime * result + ((subTechs == null) ? 0 : subTechs.hashCode());
+		return result;
+	}
+
 }

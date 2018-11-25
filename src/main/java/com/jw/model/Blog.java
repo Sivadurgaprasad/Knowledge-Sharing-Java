@@ -6,6 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -23,9 +24,37 @@ public class Blog extends BaseModel {
 	private String id;
 	@NotNull
 	@NotEmpty
+	private String blog;
+	private String shortNote;
+	private String blogIconName;
+	@NotNull
+	@NotEmpty
 	private String tech;
 	@NotNull
 	@NotEmpty
-	private List<SubTech> subTechs;
+	private List<SubTechDTO> subTechs;
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		TechInfo techInfo = (TechInfo) obj;
+		if (this.hashCode() == techInfo.hashCode()) {
+			return true;
+		}
+		return Boolean.FALSE;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((tech == null) ? 0 : tech.hashCode());
+		result = prime * result + ((subTechs == null) ? 0 : subTechs.hashCode());
+		return result;
+	}
 }
