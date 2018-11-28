@@ -23,9 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.jw.exception.FileIOException;
 import com.jw.exception.InvalidInputDataException;
 import com.jw.exception.NullDirectoryException;
-import com.jw.model.Blog;
+import com.jw.model.BlogModel;
 import com.jw.model.SubTechDTO;
-import com.jw.model.TechInfo;
+import com.jw.model.TechInfoModel;
 import com.jw.util.ErrorCode;
 import com.jw.util.FilePathUtil;
 import com.jw.util.KSConstants;
@@ -178,7 +178,7 @@ public class ImageManagementImpl implements ImageManagement {
 	}
 
 	@Override
-	public void uploadBlogImageAndDeleteFromTemp(Blog blog) {
+	public void uploadBlogImageAndDeleteFromTemp(BlogModel blog) {
 		Map<String, String> archePathOriginalName = null;
 		Map<String, String> scenarioPathOriginalName = null;
 		Map<String, String> programPathOriginalName = null;
@@ -243,7 +243,7 @@ public class ImageManagementImpl implements ImageManagement {
 	}
 
 	@Override
-	public void uploadTechIconImageAndDeleteFromTemp(TechInfo techInfo) {
+	public void uploadTechIconImageAndDeleteFromTemp(TechInfoModel techInfo) {
 		// get the uploaded image from directory and delete it and save that image with
 		// Corresponding data
 		if (techInfo.getUploadImagePath() != null) {

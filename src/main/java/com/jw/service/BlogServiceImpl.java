@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.jw.exception.DataAccessNotFoundException;
 import com.jw.exception.InvalidDataAccessException;
 import com.jw.exception.InvalidInputDataException;
-import com.jw.model.Blog;
+import com.jw.model.BlogModel;
 import com.jw.repository.BlogRepository;
 import com.jw.util.ErrorCode;
 import com.jw.util.KSConstants;
@@ -27,8 +27,8 @@ public class BlogServiceImpl implements BlogService {
 	private ImageManagement imageManagement; 
 
 	@Override
-	public Blog saveBlog(Blog blog) {
-		Blog blogResponse = null;
+	public BlogModel saveBlog(BlogModel blog) {
+		BlogModel blogResponse = null;
 		LOGGER.info(
 				"Uploading Images from Temp directory, Set Image name to Blog and Delete that image from Temp Directory.");
 		imageManagement.uploadBlogImageAndDeleteFromTemp(blog);
@@ -43,8 +43,8 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public Blog getBlog(String subTech) {
-		Blog blog = null;
+	public BlogModel getBlog(String subTech) {
+		BlogModel blog = null;
 		try {
 			LOGGER.debug("Blog fetching with Blog Name :{}", subTech);
 		//	blog = homeRepository.findBySubTechs_subTech(subTech)(subTech);
@@ -60,14 +60,14 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public List<Blog> getAllBlogs() {
+	public List<BlogModel> getAllBlogs() {
 		LOGGER.debug("Getting all Blogs");
 		return homeRepository.findAll();
 	}
 
 	@Override
-	public Blog updateBlog(Blog blog) {
-		Blog blogResponse = null;
+	public BlogModel updateBlog(BlogModel blog) {
+		BlogModel blogResponse = null;
 		LOGGER.info(
 				"Uploading Images from Temp directory, Set Image name to Blog and Delete that image from Temp Directory.");
 		imageManagement.uploadBlogImageAndDeleteFromTemp(blog);

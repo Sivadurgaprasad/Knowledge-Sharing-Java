@@ -26,8 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.jw.dto.TechInfoDTO;
 import com.jw.exception.InvalidInputDataException;
 import com.jw.exception.ObjectNotFoundException;
-import com.jw.model.Blog;
-import com.jw.model.TechInfo;
+import com.jw.model.BlogModel;
+import com.jw.model.TechInfoModel;
 import com.jw.service.BlogService;
 import com.jw.service.ImageManagement;
 import com.jw.service.TechInfoService;
@@ -54,9 +54,14 @@ public class BlogController {
 	 *********************** Blog Information *************************
 	 ******************************************************************/
 
-	// Saving Blog
+	/**
+	 * Saving Blog in mongoDB. If it has any errors it will throw InvalidInputDataException.
+	 * @param blog
+	 * @param errors
+	 * @return
+	 */
 	@PostMapping(value = "/save")
-	public String save(@RequestBody @Valid Blog blog, Errors errors) {
+	public String save(@RequestBody @Valid BlogModel blog, Errors errors) {
 
 		if (errors.hasErrors()) {
 			LOGGER.error("Saving blog failed with blog {} and got these errors {}", blog, errors);
@@ -64,28 +69,28 @@ public class BlogController {
 					KSConstants.KS1002.concat(errors.toString()));
 		}
 		blog = blogService.saveBlog(blog);
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Blog saved successfully with {}", blog);
+		if (LOGGER.isInfoEnabled())
+			LOGGER.info("Blog saved successfully with {}", blog);
 		return blog.getTech() + " of " + blog.getSubTechs().get(0).getSubTech() + " Blog successfully Submitted.";
 	}
 
 	// Getting Single Blog details
 	@GetMapping(value = "/details/{subTech}")
-	public Blog get(@PathVariable String subTech) {
+	public BlogModel get(@PathVariable String subTech) {
 		LOGGER.info("Getting data with Blog Name : {}", subTech);
 		return blogService.getBlog(subTech);
 	}
 
 	// Getting all Blogs
 	@GetMapping(value = "/all")
-	public List<Blog> getAll() {
+	public List<BlogModel> getAll() {
 		LOGGER.info("Getting all Blogs");
 		return blogService.getAllBlogs();
 	}
 
 	// Updating Blog details
 	@PutMapping(value = "/update")
-	public Blog update(@RequestBody @Valid Blog blog, Errors errors) {
+	public BlogModel update(@RequestBody @Valid BlogModel blog, Errors errors) {
 
 		if (errors.hasErrors()) {
 			LOGGER.error("Updating blog failed with blog {} and got these errors {}", blog, errors);
@@ -112,14 +117,14 @@ public class BlogController {
 	 ******************************************************************/
 
 	/**
-	 * Save Technology Info with Uploaded image Path
+	 * Save Technology Info with Uploaded image Path.If it has any Errors it will throw InvalidInputDataException.
 	 * 
 	 * @param techInfo
 	 * @param errors
 	 * @return
 	 */
 	@PostMapping(value = "/saveTechInfo")
-	public TechInfoDTO saveTechInfo(@RequestBody @Valid TechInfo techInfo, Errors errors) {
+	public TechInfoDTO saveTechInfo(@RequestBody @Valid TechInfoModel techInfo, Errors errors) {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Request received for BlogController.save() is starting with {}", techInfo);
 		}
@@ -131,7 +136,7 @@ public class BlogController {
 		LOGGER.info("Uploading Technology Icon from temp directory and deleting that image from temp directory");
 		imageManagement.uploadTechIconImageAndDeleteFromTemp(techInfo);
 		if (techInfo.getBlogIconName() != null && techInfo.getBlogIconName().length() > 0) {
-			LOGGER.debug("Saving Complete Technology Info with {}", techInfo);
+			LOGGER.info("Saving Complete Technology Info with {}", techInfo);
 			return techInfoService.save(techInfo);
 		} else {
 			throw new ObjectNotFoundException("ks1003", "Uploaded Blog Icon not available in context");

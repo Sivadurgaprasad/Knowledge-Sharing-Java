@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.jw.model.TechInfo;
+import com.jw.model.TechInfoModel;
 
-public interface DropDownRepository extends MongoRepository<TechInfo, String> {
+public interface DropDownRepository extends MongoRepository<TechInfoModel, String> {
 
 	@Query(value="{}" ,fields="{'blog':1}")
-	public List<TechInfo> findAllDropDownTechnologies();
+	public List<TechInfoModel> findAllDropDownTechnologies();
 	
 	@Query(value="{'id':?0}", fields="{'subTechs':1}")
-	public TechInfo findAllDropDownSubTechs(String technologyId);
+	public TechInfoModel findAllDropDownSubTechs(String technologyId);
 }

@@ -3,17 +3,17 @@ package com.jw.service;
 import java.util.List;
 import java.util.Map;
 
-import com.jw.model.Blog;
+import com.jw.model.BlogModel;
 
 public interface BlogService {
 
-	public Blog saveBlog(Blog blog);
+	public BlogModel saveBlog(BlogModel blog);
 
-	public Blog getBlog(String subTech);
+	public BlogModel getBlog(String subTech);
 
-	public List<Blog> getAllBlogs();
+	public List<BlogModel> getAllBlogs();
 
-	public Blog updateBlog(Blog blog);
+	public BlogModel updateBlog(BlogModel blog);
 
 	public void remove(String id);
 

@@ -2,11 +2,11 @@ package com.jw.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.jw.model.Blog;
+import com.jw.model.BlogModel;
 
-public interface BlogRepository extends MongoRepository<Blog, String> {
+public interface BlogRepository extends MongoRepository<BlogModel, String> {
 	
-	 public Blog findBySubTechs_subTech(String subTech);
+	 public BlogModel findBySubTechs_subTech(String subTech);
 	
 	// @Query(fields="{'tech':1, 'subTech':1}")
 	// public List<Blog> findTechAndSubTechnologies();

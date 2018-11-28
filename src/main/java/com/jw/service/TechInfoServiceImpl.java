@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import com.jw.dto.TechInfoDTO;
 import com.jw.exception.DataAccessNotFoundException;
 import com.jw.exception.InvalidInputDataException;
-import com.jw.model.Blog;
+import com.jw.model.BlogModel;
 import com.jw.model.SubTechDTO;
-import com.jw.model.TechInfo;
+import com.jw.model.TechInfoModel;
 import com.jw.repository.BlogRepository;
 import com.jw.util.ErrorCode;
 import com.jw.util.FilePathUtil;
@@ -31,14 +31,14 @@ public class TechInfoServiceImpl implements TechInfoService {
 	private FilePathUtil filePathUtil;
 
 	@Override
-	public TechInfoDTO save(TechInfo techInfo) {
+	public TechInfoDTO save(TechInfoModel techInfo) {
 		TechInfoDTO techInfoDto = null;
-		Blog blog = null;
+		BlogModel blog = null;
 		List<SubTechDTO> subTechs = null;
 		SubTechDTO subTechDto = null;
-		LOGGER.debug("Saving Technology Info with data : {}", techInfo);
+		LOGGER.info("Saving Technology Info with data : {}", techInfo);
 		techInfo.setBlogIconName(filePathUtil.getOriginalImageName(techInfo.getBlogIconName()));
-		blog = new Blog();
+		blog = new BlogModel();
 		subTechs = new ArrayList<>();
 		blog.setBlog(techInfo.getBlog());
 		blog.setShortNote(techInfo.getShortNote());
@@ -54,7 +54,7 @@ public class TechInfoServiceImpl implements TechInfoService {
 		techInfoDto.setBlog(blog.getBlog());
 		techInfoDto.setBlogIconName(blog.getBlogIconName());
 		LOGGER.info("Sub Technologies iterating from SubTechDtos {}", blog.getSubTechs());
-		techInfoDto.setSubTechs(blog.getSubTechs().stream().map(subTechStream -> subTechStream.getSubTech())
+		techInfoDto.setSubTechs(blog.getSubTechs().stream().map(SubTechDTO::getSubTech)
 				.collect(Collectors.toList()));
 		return techInfoDto;
 	}
@@ -62,8 +62,8 @@ public class TechInfoServiceImpl implements TechInfoService {
 	@Override
 	public TechInfoDTO get(String id) {
 		TechInfoDTO techInfoDto = null;
-		Blog blog = null;
-		Optional<Blog> optional = null;
+		BlogModel blog = null;
+		Optional<BlogModel> optional = null;
 
 		try {
 			LOGGER.info("Technology Info fetching with id :{}", id);
@@ -80,7 +80,7 @@ public class TechInfoServiceImpl implements TechInfoService {
 			techInfoDto.setBlogIconName(blog.getBlogIconName());
 			techInfoDto.setShortNote(blog.getShortNote());
 			techInfoDto.setSubTechs(
-					blog.getSubTechs().stream().map(subTech -> subTech.getSubTech()).collect(Collectors.toList()));
+					blog.getSubTechs().stream().map(SubTechDTO::getSubTech).collect(Collectors.toList()));
 			return techInfoDto;
 		} else {
 			LOGGER.error("Getting Technology Info failed with id {}", id);
@@ -90,13 +90,13 @@ public class TechInfoServiceImpl implements TechInfoService {
 
 	@Override
 	public List<TechInfoDTO> getAll() {
-		List<Blog> blogList = null;
+		List<BlogModel> blogList = null;
 		TechInfoDTO techInfoDTO = null;
 		List<TechInfoDTO> techInfoDtoList = null;
 		LOGGER.debug("Getting all Technology Info");
 		blogList = blogRepository.findAll();
 		techInfoDtoList = new ArrayList<>();
-		for (Blog blog : blogList) {
+		for (BlogModel blog : blogList) {
 			techInfoDTO = new TechInfoDTO();
 			techInfoDTO.setId(blog.getId());
 			techInfoDTO.setBlog(blog.getBlog());
@@ -107,10 +107,10 @@ public class TechInfoServiceImpl implements TechInfoService {
 	}
 
 	@Override
-	public Blog update(TechInfo techInfo) {
-		Blog blog = null;
+	public BlogModel update(TechInfoModel techInfo) {
+		BlogModel blog = null;
 		LOGGER.debug("Updating Technology Info with TechInfo {}", techInfo);
-		blog = new Blog();
+		blog = new BlogModel();
 		blog.setId(techInfo.getId());
 		return blogRepository.save(blog);
 	}

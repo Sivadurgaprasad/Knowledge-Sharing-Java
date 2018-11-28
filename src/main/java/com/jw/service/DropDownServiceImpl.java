@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.jw.dto.BlogDropDownDTO;
 import com.jw.exception.DataAccessNotFoundException;
-import com.jw.model.TechInfo;
+import com.jw.model.TechInfoModel;
 import com.jw.repository.DropDownRepository;
 import com.jw.util.ErrorCode;
 import com.jw.util.KSConstants;
@@ -25,7 +25,7 @@ public class DropDownServiceImpl implements DropDownService {
 
 	@Override
 	public List<BlogDropDownDTO> getAllTechnologies() {
-		List<TechInfo> techInfoList = null;
+		List<TechInfoModel> techInfoList = null;
 		List<BlogDropDownDTO> blogDDList = null;
 		BlogDropDownDTO blogDD = null;
 
@@ -33,7 +33,7 @@ public class DropDownServiceImpl implements DropDownService {
 		techInfoList = dropDownRepository.findAllDropDownTechnologies();
 		if (techInfoList != null && !techInfoList.isEmpty()) {
 			blogDDList = new ArrayList<>();
-			for (TechInfo techInfo : techInfoList) {
+			for (TechInfoModel techInfo : techInfoList) {
 				blogDD = new BlogDropDownDTO();
 			//	blogDD.setId(techInfo.getId());
 				blogDD.setBlog(techInfo.getBlog());
@@ -48,7 +48,7 @@ public class DropDownServiceImpl implements DropDownService {
 
 	@Override
 	public BlogDropDownDTO getAllSubTechnologies(String technologyId) {
-		TechInfo techInfo = null;
+		TechInfoModel techInfo = null;
 		BlogDropDownDTO blogDD = null;
 
 		LOGGER.debug("Fetching Sub Technologies list for dropdown");
