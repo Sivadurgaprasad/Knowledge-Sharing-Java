@@ -2,6 +2,7 @@ package com.jw.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.jw.dto.BlogDropDownDTO;
 import com.jw.exception.DataAccessNotFoundException;
+<<<<<<< HEAD
+import com.jw.model.Blog;
+import com.jw.model.SubTechDTO;
+=======
 import com.jw.model.TechInfoModel;
+>>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
 import com.jw.repository.DropDownRepository;
 import com.jw.util.ErrorCode;
 import com.jw.util.KSConstants;
@@ -25,18 +31,26 @@ public class DropDownServiceImpl implements DropDownService {
 
 	@Override
 	public List<BlogDropDownDTO> getAllTechnologies() {
+<<<<<<< HEAD
+=======
 		List<TechInfoModel> techInfoList = null;
+>>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
 		List<BlogDropDownDTO> blogDDList = null;
+		List<Blog> blogs = null;
 		BlogDropDownDTO blogDD = null;
 
-		LOGGER.debug("Blog technologies fetching");
-		techInfoList = dropDownRepository.findAllDropDownTechnologies();
-		if (techInfoList != null && !techInfoList.isEmpty()) {
+		blogs = dropDownRepository.findAllDropDownTechnologies();
+		LOGGER.info("Blog technologies fetched list {}", blogs);
+		if (blogs != null && !blogs.isEmpty()) {
 			blogDDList = new ArrayList<>();
+<<<<<<< HEAD
+			for (Blog blog : blogs) {
+=======
 			for (TechInfoModel techInfo : techInfoList) {
+>>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
 				blogDD = new BlogDropDownDTO();
-			//	blogDD.setId(techInfo.getId());
-				blogDD.setBlog(techInfo.getBlog());
+				blogDD.setId(blog.getId());
+				blogDD.setBlog(blog.getBlog());
 				blogDDList.add(blogDD);
 			}
 		} else {
@@ -47,16 +61,23 @@ public class DropDownServiceImpl implements DropDownService {
 	}
 
 	@Override
+<<<<<<< HEAD
+	public BlogDropDownDTO getAllSubTechnologies(String blogName) {
+=======
 	public BlogDropDownDTO getAllSubTechnologies(String technologyId) {
 		TechInfoModel techInfo = null;
+>>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
 		BlogDropDownDTO blogDD = null;
+		Blog blog = null;
 
-		LOGGER.debug("Fetching Sub Technologies list for dropdown");
-		techInfo = dropDownRepository.findAllDropDownSubTechs(technologyId);
-		if (techInfo != null) {
+		blog = dropDownRepository.findAllDropDownSubTechs(blogName);
+		LOGGER.info("Fetched Sub Technologies list for dropdown {}", blogDD);
+		if (blog != null) {
 			blogDD = new BlogDropDownDTO();
-		//	blogDD.setId(techInfo.getId());
-			blogDD.setSubTechs(techInfo.getSubTechs());
+			blogDD.setId(blog.getId());
+			blogDD.setSubTechs(blog.getSubTechs() != null
+					? blog.getSubTechs().stream().map(SubTechDTO::getSubTech).collect(Collectors.toList())
+					: null);
 		} else {
 			LOGGER.error("Fetching Blog Sub Technologies failed");
 			throw new DataAccessNotFoundException(ErrorCode.KS1001.toString(), KSConstants.KS1001);
