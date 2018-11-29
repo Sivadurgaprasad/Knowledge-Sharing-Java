@@ -28,10 +28,10 @@ public class DropDownController {
 		return dropDownService.getAllTechnologies();
 	}
 
-	@GetMapping(value = "/subTechnologies/{blog}")
-	public BlogDropDownDTO getSubTechnologies(@PathVariable String blog) {
-		LOGGER.debug("Fetching SubTechnologies for dropdown");
-		return dropDownService.getAllSubTechnologies(blog);
+	@GetMapping(value = "/subTechnologies/{id}")
+	public BlogDropDownDTO getSubTechnologies(@PathVariable String id) {
+		LOGGER.debug("Fetching SubTechnologies for dropdown id: {}", id);
+		return dropDownService.getAllSubTechnologies(id);
 	}
 
 }

@@ -11,12 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.jw.dto.BlogDropDownDTO;
 import com.jw.exception.DataAccessNotFoundException;
-<<<<<<< HEAD
-import com.jw.model.Blog;
+import com.jw.model.BlogModel;
 import com.jw.model.SubTechDTO;
-=======
 import com.jw.model.TechInfoModel;
->>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
 import com.jw.repository.DropDownRepository;
 import com.jw.util.ErrorCode;
 import com.jw.util.KSConstants;
@@ -31,23 +28,16 @@ public class DropDownServiceImpl implements DropDownService {
 
 	@Override
 	public List<BlogDropDownDTO> getAllTechnologies() {
-<<<<<<< HEAD
-=======
-		List<TechInfoModel> techInfoList = null;
->>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
+
 		List<BlogDropDownDTO> blogDDList = null;
-		List<Blog> blogs = null;
+		List<BlogModel> blogs = null;
 		BlogDropDownDTO blogDD = null;
 
 		blogs = dropDownRepository.findAllDropDownTechnologies();
 		LOGGER.info("Blog technologies fetched list {}", blogs);
 		if (blogs != null && !blogs.isEmpty()) {
 			blogDDList = new ArrayList<>();
-<<<<<<< HEAD
-			for (Blog blog : blogs) {
-=======
-			for (TechInfoModel techInfo : techInfoList) {
->>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
+			for (BlogModel blog : blogs) {
 				blogDD = new BlogDropDownDTO();
 				blogDD.setId(blog.getId());
 				blogDD.setBlog(blog.getBlog());
@@ -61,17 +51,13 @@ public class DropDownServiceImpl implements DropDownService {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public BlogDropDownDTO getAllSubTechnologies(String blogName) {
-=======
-	public BlogDropDownDTO getAllSubTechnologies(String technologyId) {
-		TechInfoModel techInfo = null;
->>>>>>> c7bd2306febbd18bee65476e96f34e271821d4d0
+	public BlogDropDownDTO getAllSubTechnologies(String id) {
+		
 		BlogDropDownDTO blogDD = null;
-		Blog blog = null;
+		BlogModel blog = null;
 
-		blog = dropDownRepository.findAllDropDownSubTechs(blogName);
-		LOGGER.info("Fetched Sub Technologies list for dropdown {}", blogDD);
+		blog = dropDownRepository.findAllDropDownSubTechs(id.trim());
+		LOGGER.info("Fetched Sub Technologies list for dropdown {}", blog);
 		if (blog != null) {
 			blogDD = new BlogDropDownDTO();
 			blogDD.setId(blog.getId());
