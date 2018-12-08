@@ -6,7 +6,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -17,7 +16,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class Blog extends BaseModel {
+public class BlogModel extends BaseModel {
 	private static final long serialVersionUID = -1651727884634205326L;
 
 	@Id
@@ -42,7 +41,7 @@ public class Blog extends BaseModel {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		TechInfo techInfo = (TechInfo) obj;
+		TechInfoModel techInfo = (TechInfoModel) obj;
 		if (this.hashCode() == techInfo.hashCode()) {
 			return true;
 		}
