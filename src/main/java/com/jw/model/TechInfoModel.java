@@ -14,7 +14,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class TechInfo  {
+public class TechInfoModel  {
 
 	private String id;
 	@NotNull
@@ -38,7 +38,7 @@ public class TechInfo  {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		TechInfo techInfo = (TechInfo) obj;
+		TechInfoModel techInfo = (TechInfoModel) obj;
 		if (this.hashCode() == techInfo.hashCode()) {
 			return true;
 		}

@@ -13,7 +13,6 @@ import com.jw.dto.BlogDropDownDTO;
 import com.jw.exception.DataAccessNotFoundException;
 import com.jw.model.BlogModel;
 import com.jw.model.SubTechDTO;
-import com.jw.model.TechInfoModel;
 import com.jw.repository.DropDownRepository;
 import com.jw.util.ErrorCode;
 import com.jw.util.KSConstants;
