@@ -14,4 +14,5 @@ public class NullDirectoryException extends KSFileHandlingException {
 	public NullDirectoryException(String errorMessage) {
 		super(errorMessage);
 	}
+
 }

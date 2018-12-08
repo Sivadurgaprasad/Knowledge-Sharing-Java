@@ -26,12 +26,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.jw.dto.TechInfoDTO;
 import com.jw.exception.InvalidInputDataException;
 import com.jw.exception.ObjectNotFoundException;
-import com.jw.model.Blog;
-import com.jw.model.TechInfo;
+import com.jw.model.BlogModel;
+import com.jw.model.TechInfoModel;
 import com.jw.service.BlogService;
 import com.jw.service.ImageManagement;
 import com.jw.service.TechInfoService;
+import com.jw.util.ErrorCode;
 import com.jw.util.FilePathUtil;
+import com.jw.util.KSConstants;
 
 @RestController
 @Validated
@@ -52,52 +54,57 @@ public class BlogController {
 	 *********************** Blog Information *************************
 	 ******************************************************************/
 
-	// Saving Blog
+	/**
+	 * Saving Blog in mongoDB. If it has any errors it will throw InvalidInputDataException.
+	 * @param blog
+	 * @param errors
+	 * @return
+	 */
 	@PostMapping(value = "/save")
-	public String save(@RequestBody @Valid Blog blog, Errors errors) {
+	public String save(@RequestBody @Valid BlogModel blog, Errors errors) {
 
 		if (errors.hasErrors()) {
-			LOGGER.error(
-					"Saving blog failed with blog " + blog.toString() + "and got these errors " + errors.toString());
-			throw new InvalidInputDataException("ks1002", "Input data has errors. Those " + errors.toString());
+			LOGGER.error("Saving blog failed with blog {} and got these errors {}", blog, errors);
+			throw new InvalidInputDataException(ErrorCode.KS1002.toString(),
+					KSConstants.KS1002.concat(errors.toString()));
 		}
 		blog = blogService.saveBlog(blog);
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Blog saved successfully with {}", blog);
+		if (LOGGER.isInfoEnabled())
+			LOGGER.info("Blog saved successfully with {}", blog);
 		return blog.getTech() + " of " + blog.getSubTechs().get(0).getSubTech() + " Blog successfully Submitted.";
 	}
 
 	// Getting Single Blog details
 	@GetMapping(value = "/details/{subTech}")
-	public Blog get(@PathVariable String subTech) {
-		LOGGER.info("Getting data with Blog Name :" + subTech);
+	public BlogModel get(@PathVariable String subTech) {
+		LOGGER.info("Getting data with Blog Name : {}", subTech);
 		return blogService.getBlog(subTech);
 	}
 
 	// Getting all Blogs
 	@GetMapping(value = "/all")
-	public List<Blog> getAll() {
+	public List<BlogModel> getAll() {
 		LOGGER.info("Getting all Blogs");
 		return blogService.getAllBlogs();
 	}
 
 	// Updating Blog details
 	@PutMapping(value = "/update")
-	public Blog update(@RequestBody @Valid Blog blog, Errors errors) {
+	public BlogModel update(@RequestBody @Valid BlogModel blog, Errors errors) {
 
 		if (errors.hasErrors()) {
-			LOGGER.error(
-					"Updating blog failed with blog " + blog.toString() + " and got these errors " + errors.toString());
-			throw new InvalidInputDataException("ks1002", "Input data has errors. Those " + errors.toString());
+			LOGGER.error("Updating blog failed with blog {} and got these errors {}", blog, errors);
+			throw new InvalidInputDataException(ErrorCode.KS1002.toString(),
+					KSConstants.KS1002.concat(errors.toString()));
 		}
-		LOGGER.debug("Blog updating with data :" + blog);
+		LOGGER.debug("Blog updating with data :{}", blog);
 		return blogService.updateBlog(blog);
 	}
 
 	// Deleting Blog details
 	@DeleteMapping(value = "/delete/{id}")
 	public String delete(@PathVariable String id) {
-		LOGGER.info("Deleting blog with id " + id);
+		LOGGER.info("Deleting blog with id {}", id);
 		if (id != null)
 			blogService.remove(id);
 		else
@@ -110,27 +117,30 @@ public class BlogController {
 	 ******************************************************************/
 
 	/**
-	 * Save Technology Info with Uploaded image Path
+	 * Save Technology Info with Uploaded image Path.If it has any Errors it will throw InvalidInputDataException.
 	 * 
 	 * @param techInfo
 	 * @param errors
 	 * @return
 	 */
 	@PostMapping(value = "/saveTechInfo")
-	public TechInfoDTO saveTechInfo(@RequestBody @Valid TechInfo techInfo, Errors errors) {
+	public TechInfoDTO saveTechInfo(@RequestBody @Valid TechInfoModel techInfo, Errors errors) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Request received for BlogController.save() is starting with {}", techInfo);
+		}
 		// check errors
 		if (errors.hasErrors()) {
-			LOGGER.error("Saving Tehcnology Info failed with techInfo " + techInfo.toString() + "and got these errors "
-					+ errors.toString());
+			LOGGER.error("Saving Tehcnology Info failed with techInfo {} and got these errors {}", techInfo, errors);
 			throw new InvalidInputDataException("ks1002", "Input data has errors. Those " + errors.toString());
 		}
 		LOGGER.info("Uploading Technology Icon from temp directory and deleting that image from temp directory");
 		imageManagement.uploadTechIconImageAndDeleteFromTemp(techInfo);
 		if (techInfo.getBlogIconName() != null && techInfo.getBlogIconName().length() > 0) {
-			LOGGER.debug("Saving Complete Technology Info with " + techInfo);
+			LOGGER.info("Saving Complete Technology Info with {}", techInfo);
 			return techInfoService.save(techInfo);
-		} else
+		} else {
 			throw new ObjectNotFoundException("ks1003", "Uploaded Blog Icon not available in context");
+		}
 	}
 
 	/**
@@ -168,16 +178,16 @@ public class BlogController {
 	 * @throws IOException
 	 */
 	@PostMapping(value = "/upload")
-	public Map<String, String> upload(@RequestParam("uploadImage") MultipartFile multipartFile) throws IOException {
+	public Map<String, String> upload(@RequestParam("uploadImage") MultipartFile multipartFile) {
 		Map<String, String> result = null;
 		String uploadImagePath = null;
 
-		LOGGER.debug("Uploading Technology Icon of image " + multipartFile.getOriginalFilename());
+		LOGGER.debug("Uploading Technology Icon of image {}", multipartFile.getOriginalFilename());
 		// upload file in temporary directory
 		uploadImagePath = imageManagement.writeImage(multipartFile, multipartFile.getOriginalFilename(), null,
 				filePathUtil.imgtempDir());
 
-		result = new HashMap<String, String>();
+		result = new HashMap<>();
 		result.put("uploadImagePath", uploadImagePath);
 		return result;
 	}

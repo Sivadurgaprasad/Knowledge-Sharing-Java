@@ -2,6 +2,7 @@ package com.jw.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.jw.dto.BlogDropDownDTO;
 import com.jw.exception.DataAccessNotFoundException;
-import com.jw.model.TechInfo;
+import com.jw.model.BlogModel;
+import com.jw.model.SubTechDTO;
+import com.jw.model.TechInfoModel;
 import com.jw.repository.DropDownRepository;
+import com.jw.util.ErrorCode;
+import com.jw.util.KSConstants;
 
 @Service
 public class DropDownServiceImpl implements DropDownService {
@@ -23,41 +28,45 @@ public class DropDownServiceImpl implements DropDownService {
 
 	@Override
 	public List<BlogDropDownDTO> getAllTechnologies() {
-		List<TechInfo> techInfoList = null;
+
 		List<BlogDropDownDTO> blogDDList = null;
+		List<BlogModel> blogs = null;
 		BlogDropDownDTO blogDD = null;
 
-		LOGGER.debug("Blog technologies fetching");
-		techInfoList = dropDownRepository.findAllDropDownTechnologies();
-		if (techInfoList != null && !techInfoList.isEmpty() && techInfoList.size() > 0) {
-			blogDDList = new ArrayList<BlogDropDownDTO>();
-			for (TechInfo techInfo : techInfoList) {
+		blogs = dropDownRepository.findAllDropDownTechnologies();
+		LOGGER.info("Blog technologies fetched list {}", blogs);
+		if (blogs != null && !blogs.isEmpty()) {
+			blogDDList = new ArrayList<>();
+			for (BlogModel blog : blogs) {
 				blogDD = new BlogDropDownDTO();
-				blogDD.setId(techInfo.getId());
-				blogDD.setBlog(techInfo.getBlog());
+				blogDD.setId(blog.getId());
+				blogDD.setBlog(blog.getBlog());
 				blogDDList.add(blogDD);
 			}
 		} else {
 			LOGGER.error("Fetching Blog technologies failed");
-			throw new DataAccessNotFoundException("ks1001", "Blog Technologies not found, Please try again");
+			throw new DataAccessNotFoundException(ErrorCode.KS1001.toString(), KSConstants.KS1001);
 		}
 		return blogDDList;
 	}
 
 	@Override
-	public BlogDropDownDTO getAllSubTechnologies(String technologyId) {
-		TechInfo techInfo = null;
+	public BlogDropDownDTO getAllSubTechnologies(String id) {
+		
 		BlogDropDownDTO blogDD = null;
+		BlogModel blog = null;
 
-		LOGGER.debug("Fetching Sub Technologies list for dropdown");
-		techInfo = dropDownRepository.findAllDropDownSubTechs(technologyId);
-		if (techInfo != null) {
+		blog = dropDownRepository.findAllDropDownSubTechs(id.trim());
+		LOGGER.info("Fetched Sub Technologies list for dropdown {}", blog);
+		if (blog != null) {
 			blogDD = new BlogDropDownDTO();
-			blogDD.setId(techInfo.getId());
-			blogDD.setSubTechs(techInfo.getSubTechs());
+			blogDD.setId(blog.getId());
+			blogDD.setSubTechs(blog.getSubTechs() != null
+					? blog.getSubTechs().stream().map(SubTechDTO::getSubTech).collect(Collectors.toList())
+					: null);
 		} else {
 			LOGGER.error("Fetching Blog Sub Technologies failed");
-			throw new DataAccessNotFoundException("ks1001", "Blog Sub Technologies not found, Please try again");
+			throw new DataAccessNotFoundException(ErrorCode.KS1001.toString(), KSConstants.KS1001);
 		}
 		return blogDD;
 	}

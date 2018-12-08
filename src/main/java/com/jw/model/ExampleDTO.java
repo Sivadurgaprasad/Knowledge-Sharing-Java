@@ -1,14 +1,15 @@
 package com.jw.model;
 
-import org.springframework.data.annotation.Id;
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 
 @Data
-public class Example {
-	@Id
-	private String id;
+public class ExampleDTO implements Serializable {
+
+	private static final long serialVersionUID = -8796844375934311226L;
 	private String example;
 	private String explanation;
 	@Transient

@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jw.exception.FileIOException;
-import com.jw.model.Blog;
-import com.jw.model.TechInfo;
+import com.jw.model.BlogModel;
+import com.jw.model.TechInfoModel;
 
 public interface ImageManagement {
 
@@ -43,12 +43,12 @@ public interface ImageManagement {
 	 * Upload Blog images from temp folder, set uploading paths to Blog and delete those images in temp.
 	 * @param blog
 	 */
-	void uploadBlogImageAndDeleteFromTemp(Blog blog);
+	void uploadBlogImageAndDeleteFromTemp(BlogModel blog);
 
 	/**
 	 * Upload Technology Icon image from temp folder, set uploading path to TechnologyInfo and delete that image in temp.
 	 * @param techInfo
 	 */
-	void uploadTechIconImageAndDeleteFromTemp(TechInfo techInfo);
+	void uploadTechIconImageAndDeleteFromTemp(TechInfoModel techInfo);
 
 }

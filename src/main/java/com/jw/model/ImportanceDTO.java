@@ -1,12 +1,12 @@
 package com.jw.model;
 
-import org.springframework.data.annotation.Id;
+import java.io.Serializable;
 
 import lombok.Data;
 
 @Data
-public class Importance {
-	@Id
-	private String id;
+public class ImportanceDTO implements Serializable {
+
+	private static final long serialVersionUID = 983732136840105668L;
 	private String importance;
 }

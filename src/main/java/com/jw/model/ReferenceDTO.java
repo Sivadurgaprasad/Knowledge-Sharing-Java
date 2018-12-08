@@ -1,12 +1,12 @@
 package com.jw.model;
 
-import org.springframework.data.annotation.Id;
+import java.io.Serializable;
 
 import lombok.Data;
 
 @Data
-public class Reference {
-	@Id
-	private String id;
+public class ReferenceDTO implements Serializable {
+
+	private static final long serialVersionUID = 2887402549236981183L;
 	private String reference;
 }

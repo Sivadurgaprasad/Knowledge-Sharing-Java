@@ -1,12 +1,12 @@
 package com.jw.model;
 
-import org.springframework.data.annotation.Id;
+import java.io.Serializable;
 
 import lombok.Data;
 
 @Data
-public class Limitation {
-	@Id
-	private String id;
+public class LimitationDTO implements Serializable {
+
+	private static final long serialVersionUID = -1608863807116241867L;
 	private String limitation;
 }

@@ -15,7 +15,12 @@ public class DataFormatConverter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataFormatConverter.class);
 
 	@Value("${imgage.write.dir}")
-	private String imageWritePath = "F:/ubuntu/Angular/Java-Web/src/assets/";
+	private String imageWritePath;
+
+	/*
+	 * TODO assigned to imageWritePath if required use it. =
+	 * "F:/ubuntu/Angular/Java-Web/src/assets/";
+	 */
 
 	/**
 	 * Convert BufferedImgage formate to byte[]. If BufferedImage is null it throw
@@ -31,8 +36,9 @@ public class DataFormatConverter {
 			writableRaster = bufferedImage.getRaster();
 			dataBufferByte = (DataBufferByte) writableRaster.getDataBuffer();
 			LOGGER.debug("Data converted from BufferedImage to byte[]");
-		} else
+		} else {
 			throw new NullPointerException("BufferedImage data null while converting BufferedImage to byte[]");
+		}
 
 		return dataBufferByte.getData();
 	}
@@ -40,8 +46,9 @@ public class DataFormatConverter {
 	public String getGeniricWritePath() {
 		if (imageWritePath != null) {
 			return imageWritePath.replaceAll("//", File.separator);
-		} else
+		} else {
 			throw new NullPointerException("Image write path not found");
+		}
 	}
 
 }

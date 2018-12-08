@@ -1,31 +1,30 @@
 package com.jw.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 
-@Data
-public class SubTech {
+@Data()
+public class SubTechDTO implements Serializable {
 
-	@Id
-	private String id;
+	private static final long serialVersionUID = -6177090526035009104L;
 	@NotNull
 	@NotEmpty
 	private String subTech;
 	@NotNull
 	@NotEmpty
-	private List<Definition> definitions;
-	private List<Example> examples;
-	private List<Importance> importances;
-	private List<InOutput> inOutputs;
-	private List<Limitation> limitations;
-	private List<Archetecture> archetectures;
+	private List<DefinitionDTO> definitions;
+	private List<ExampleDTO> examples;
+	private List<String> importances;
+	private List<InOutputDTO> inOutputs;
+	private List<String> limitations;
+	private List<ArchetectureDTO> archetectures;
 	// identifying saving image paths.
 	@Transient
 	private List<String> archeUploadImagePaths;
@@ -48,7 +47,31 @@ public class SubTech {
 	private List<String> outputImages;
 	@Transient
 	private List<String> outputDeleteImagePaths;
-	private List<Need> needs;
-	private List<Reference> references;
-	private List<Scenario> scenarios;
+	private List<String> needs;
+	private List<String> references;
+	private List<ScenarioDTO> scenarios;
+	private List<Comment> comments;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		SubTechDTO subTechDto = (SubTechDTO) obj;
+		if (this.hashCode() == subTechDto.hashCode()) {
+			return true;
+		}
+		return Boolean.FALSE;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((subTech == null) ? 0 : subTech.hashCode());
+		return result;
+	}
 }
