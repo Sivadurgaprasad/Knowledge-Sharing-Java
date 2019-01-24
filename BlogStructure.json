@@ -1,0 +1,118 @@
+{
+  "id": "",
+  "technology": "Restful",
+  "shortNote": "jsldjflsalkdflkasdfl",
+  "techIconName": "rest.png",
+  "subTechnologies": {
+    "Http Designators": {
+      "subTech": "Http Designators",
+      "shortNote": "sldkjflsdljfjsl",
+      "blogs": {
+        "Post tutorial": {
+          "blogId": "Post tutorial",
+          "blog": "POST",
+          "definitions": [
+            {
+              "definition": "",
+              "explanation": ""
+            }
+          ],
+          "examples": [
+            {
+              "example": "",
+              "explanation": "",
+              "program": ""
+            }
+          ],
+          "inOutPuts": [
+            {
+              "in": "",
+              "out": ""
+            }
+          ],
+          "importances": [
+            ""
+          ],
+          "limitations": [
+            ""
+          ],
+          "archetectures": [
+            {
+              "archetecture": "",
+              "diagram": "",
+              "explanation": ""
+            }
+          ],
+          "archeImages": [
+            ""
+          ],
+          "scenarioImages": [
+            ""
+          ],
+          "programImages": [
+            ""
+          ],
+          "outputImages": [
+            ""
+          ],
+          "needs": [
+            ""
+          ],
+          "references": [
+            ""
+          ],
+          "scenarios": [
+            {
+              "scenario": "",
+              "explanation": "",
+              "archetecture": ""
+            }
+          ],
+          "comments": [
+            {
+              "name": "",
+              "message": "",
+              "email": "",
+              "reply": []
+            }
+          ],
+          "status": ""
+        },
+        "Get tutorial": {
+          "blogId": "Get tutorial",
+          "blog": "GET"
+        },
+        "Put tutorial": {
+          "blogId": "Put tutorial",
+          "blog": "PUT"
+        },
+        "Delete tutorial": {
+          "blogId": "Delete tutorial",
+          "blog": "DELETE"
+        },
+        "Head tutorial": {
+          "blogId": "Head tutorial",
+          "blog": "HEAD"
+        }
+      }
+    },
+    "cache": {
+      "subTech": "cache",
+      "definition": "sdlkfjlskdjlf",
+      "blogs": {
+        "123456": {
+          "blogId": "123456",
+          "blog": "server cache"
+        },
+        "453589": {
+          "blogId": "453589",
+          "blog": "client cache"
+        }
+      }
+    },
+    "asynchronous": {
+      "subTech": "asynchronous",
+      "definition": "lskdjkflskdjflks"
+    }
+  }
+}
